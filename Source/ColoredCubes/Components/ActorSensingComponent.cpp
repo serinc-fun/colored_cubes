@@ -1,14 +1,14 @@
 
-#include "SensingComponent.h"
+#include "ActorSensingComponent.h"
 #include "EngineUtils.h"
 
-USensingComponent::USensingComponent()
+UActorSensingComponent::UActorSensingComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	bWantsInitializeComponent = true;
 }
 
-bool USensingComponent::CouldSee(const AActor* InActor) const
+bool UActorSensingComponent::CouldSee(const AActor* InActor) const
 {
 	if (IsValid(InActor))
 	{
@@ -30,13 +30,13 @@ bool USensingComponent::CouldSee(const AActor* InActor) const
 		FVector const SelfToOtherDir = SelfToOther.GetSafeNormal();
 		FVector const MyFacingDir = GetSensorTransform().GetUnitAxis(EAxis::X);
 
-		return ((SelfToOtherDir | MyFacingDir) >= PeripheralVisionCosine);
+		return (SelfToOtherDir | MyFacingDir) >= PeripheralVisionCosine;
 	}
 
 	return false;
 }
 
-FTransform USensingComponent::GetSensorTransform() const
+FTransform UActorSensingComponent::GetSensorTransform() const
 {
 	if (auto owner = GetOwner())
 	{
@@ -46,22 +46,22 @@ FTransform USensingComponent::GetSensorTransform() const
 	return FTransform::Identity;
 }
 
-void USensingComponent::SetPeripheralVisionAngle(const float NewPeripheralVisionAngle)
+void UActorSensingComponent::SetPeripheralVisionAngle(const float NewPeripheralVisionAngle)
 {
 	PeripheralVisionAngle = NewPeripheralVisionAngle;
 	PeripheralVisionCosine = FMath::Cos(FMath::DegreesToRadians(PeripheralVisionAngle));
 }
 
-void USensingComponent::InitializeComponent()
+void UActorSensingComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
 
 	SetPeripheralVisionAngle(PeripheralVisionAngle);
 	
-	GetWorld()->GetTimerManager().SetTimer(SensingIntervalTimerHandle, this, &USensingComponent::SensingHandle, SensingInterval, true);
+	GetWorld()->GetTimerManager().SetTimer(SensingIntervalTimerHandle, this, &UActorSensingComponent::SensingHandle, SensingInterval, true);
 }
 
-void USensingComponent::SensingHandle()
+void UActorSensingComponent::SensingHandle()
 {
 	for (AActor* actor : TActorRange<AActor>(GetWorld()))
 	{

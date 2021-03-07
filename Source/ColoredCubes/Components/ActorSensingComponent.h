@@ -3,18 +3,20 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "SensingComponent.generated.h"
+#include "ActorSensingComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSensingSignature, AActor*, Actor);
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class COLOREDCUBES_API USensingComponent : public UActorComponent
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent, DisplayName="SesnsingComponent") )
+class COLOREDCUBES_API UActorSensingComponent : public UActorComponent
 {
+	friend class USenseVisualizerComponent;
+
 	GENERATED_BODY()
 
 public:	
 
-	USensingComponent();
+	UActorSensingComponent();
 
 	UFUNCTION(BlueprintPure, Category = "Sensing")
 	bool CouldSee(const AActor* InActor) const;

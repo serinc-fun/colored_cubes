@@ -1,12 +1,60 @@
 
 #include "SenseVisualizerComponent.h"
 
-#include "SensingComponent.h"
+
+#include "DrawDebugHelpers.h"
+#include "ActorSensingComponent.h"
+#include "Camera/CameraComponent.h"
 #include "ColoredCubes/Actors/ColoredActor.h"
 
 USenseVisualizerComponent::USenseVisualizerComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
+}
+
+void USenseVisualizerComponent::TickComponent(float DeltaTime, ELevelTick TickType,	FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	
+	if (auto owner = GetOwner())
+	{
+		if (IsValid(SensingComponent) && IsValid(CameraComponent))
+		{			
+			// Sensing
+			DrawDebugAltCone
+			(
+				GetWorld(),
+				owner->GetActorLocation(),
+				owner->GetActorRotation(),
+				SensingComponent->SensingRadius,
+				SensingComponent->PeripheralVisionCosine,
+				SensingComponent->PeripheralVisionCosine,
+				FColorList::OrangeRed,
+				true,
+				DeltaTime,
+				SDPG_Foreground,
+				10
+			);
+
+			const float cameraViewCosine = FMath::Cos(FMath::DegreesToRadians(CameraComponent->FieldOfView / 2.0f));
+
+			// Camera
+			DrawDebugAltCone
+            (
+                GetWorld(),
+                owner->GetActorLocation(),
+                owner->GetActorRotation(),
+                SensingComponent->SensingRadius,
+                cameraViewCosine,
+                cameraViewCosine,
+                FColorList::LimeGreen,
+                true,
+                DeltaTime,
+                SDPG_Foreground,
+                10
+            );
+		}
+	}
 }
 
 void USenseVisualizerComponent::BeginPlay()
@@ -17,10 +65,20 @@ void USenseVisualizerComponent::BeginPlay()
 	
 	if (auto owner = GetOwner())
 	{
-		if (auto sensing = owner->FindComponentByClass<USensingComponent>())
+		SensingComponent = owner->FindComponentByClass<UActorSensingComponent>();
+		if (IsValid(SensingComponent))
 		{
-			sensing->OnActorSee.AddDynamic(this, &USenseVisualizerComponent::OnActorSee);
-			sensing->OnActorLost.AddDynamic(this, &USenseVisualizerComponent::OnActorLost);
+			float viewAngle = 45.0f;
+			
+			CameraComponent = owner->FindComponentByClass<UCameraComponent>();
+			if (IsValid(CameraComponent))
+			{
+				viewAngle = (CameraComponent->FieldOfView / 2.0f) + 10.0f;
+			}
+
+			SensingComponent->SetPeripheralVisionAngle(viewAngle);
+			SensingComponent->OnActorSee.AddDynamic(this, &USenseVisualizerComponent::OnActorSee);
+			SensingComponent->OnActorLost.AddDynamic(this, &USenseVisualizerComponent::OnActorLost);
 		}
 	}
 }

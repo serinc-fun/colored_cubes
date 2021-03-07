@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "SenseVisualizerComponent.generated.h"
 
+class UActorSensingComponent;
+class UCameraComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class COLOREDCUBES_API USenseVisualizerComponent : public UActorComponent
@@ -18,6 +20,7 @@ public:
 
 protected:
 
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void BeginPlay() override;
 	
 	UFUNCTION()
@@ -28,5 +31,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Visualizer")
 	TMap<float, FLinearColor> RangeColors;
+
+	UPROPERTY()
+	UActorSensingComponent* SensingComponent;
+
+	UPROPERTY()
+	UCameraComponent* CameraComponent;
 		
 };
