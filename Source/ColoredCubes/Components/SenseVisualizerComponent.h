@@ -32,6 +32,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Visualizer")
 	TMap<float, FLinearColor> RangeColors;
 
+	UPROPERTY(EditAnywhere, Category = "Visualizer")
+	float AdditionalViewAngle = 20.0f;
+
 	UPROPERTY()
 	UActorSensingComponent* SensingComponent;
 

@@ -19,40 +19,45 @@ void USenseVisualizerComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	if (auto owner = GetOwner())
 	{
 		if (IsValid(SensingComponent) && IsValid(CameraComponent))
-		{			
+		{
+			//DrawDebugLine
+			//(
+				//GetWorld()
+			//);
+			
 			// Sensing
-			DrawDebugAltCone
-			(
-				GetWorld(),
-				owner->GetActorLocation(),
-				owner->GetActorRotation(),
-				SensingComponent->SensingRadius,
-				SensingComponent->PeripheralVisionCosine,
-				SensingComponent->PeripheralVisionCosine,
-				FColorList::OrangeRed,
-				true,
-				DeltaTime,
-				SDPG_Foreground,
-				10
-			);
-
-			const float cameraViewCosine = FMath::Cos(FMath::DegreesToRadians(CameraComponent->FieldOfView / 2.0f));
-
-			// Camera
-			DrawDebugAltCone
-            (
-                GetWorld(),
-                owner->GetActorLocation(),
-                owner->GetActorRotation(),
-                SensingComponent->SensingRadius,
-                cameraViewCosine,
-                cameraViewCosine,
-                FColorList::LimeGreen,
-                true,
-                DeltaTime,
-                SDPG_Foreground,
-                10
-            );
+			//DrawDebugAltCone
+			//(
+			//	GetWorld(),
+			//	owner->GetActorLocation(),
+			//	owner->GetActorRotation(),
+			//	SensingComponent->SensingRadius,
+			//	SensingComponent->PeripheralVisionCosine,
+			//	SensingComponent->PeripheralVisionCosine,
+			//	FColorList::OrangeRed,
+			//	true,
+			//	DeltaTime,
+			//	SDPG_Foreground,
+			//	10
+			//);
+//
+			//const float cameraViewCosine = FMath::Cos(FMath::DegreesToRadians(CameraComponent->FieldOfView / 2.0f));
+//
+			//// Camera
+			//DrawDebugAltCone
+            //(
+            //    GetWorld(),
+            //    owner->GetActorLocation(),
+            //    owner->GetActorRotation(),
+            //    SensingComponent->SensingRadius,
+            //    cameraViewCosine,
+            //    cameraViewCosine,
+            //    FColorList::LimeGreen,
+            //    true,
+            //    DeltaTime,
+            //    SDPG_Foreground,
+            //    10
+            //);
 		}
 	}
 }
@@ -73,7 +78,7 @@ void USenseVisualizerComponent::BeginPlay()
 			CameraComponent = owner->FindComponentByClass<UCameraComponent>();
 			if (IsValid(CameraComponent))
 			{
-				viewAngle = (CameraComponent->FieldOfView / 2.0f) + 10.0f;
+				viewAngle = (CameraComponent->FieldOfView / 2.0f) + AdditionalViewAngle;
 			}
 
 			SensingComponent->SetPeripheralVisionAngle(viewAngle);
