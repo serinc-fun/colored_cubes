@@ -17,6 +17,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Colored")
 	void SetColor(FLinearColor InColor);
+
+	UFUNCTION(BlueprintPure, Category = "Colored")
+	FORCEINLINE FLinearColor GetDefaultColor() const { return DefaultColor; }
 	
 protected:
 
