@@ -15,49 +15,52 @@ USenseVisualizerComponent::USenseVisualizerComponent()
 void USenseVisualizerComponent::TickComponent(float DeltaTime, ELevelTick TickType,	FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	
-	if (auto owner = GetOwner())
+
+	if (bVisualizeFOV)
 	{
-		if (IsValid(SensingComponent) && IsValid(CameraComponent))
+		if (auto owner = GetOwner())
 		{
-			//DrawDebugLine
-			//(
-				//GetWorld()
-			//);
-			
-			// Sensing
-			//DrawDebugAltCone
-			//(
-			//	GetWorld(),
-			//	owner->GetActorLocation(),
-			//	owner->GetActorRotation(),
-			//	SensingComponent->SensingRadius,
-			//	SensingComponent->PeripheralVisionCosine,
-			//	SensingComponent->PeripheralVisionCosine,
-			//	FColorList::OrangeRed,
-			//	true,
-			//	DeltaTime,
-			//	SDPG_Foreground,
-			//	10
-			//);
-//
-			//const float cameraViewCosine = FMath::Cos(FMath::DegreesToRadians(CameraComponent->FieldOfView / 2.0f));
-//
-			//// Camera
-			//DrawDebugAltCone
-            //(
-            //    GetWorld(),
-            //    owner->GetActorLocation(),
-            //    owner->GetActorRotation(),
-            //    SensingComponent->SensingRadius,
-            //    cameraViewCosine,
-            //    cameraViewCosine,
-            //    FColorList::LimeGreen,
-            //    true,
-            //    DeltaTime,
-            //    SDPG_Foreground,
-            //    10
-            //);
+			if (IsValid(SensingComponent) && IsValid(CameraComponent))
+			{
+				const auto location = owner->GetActorTransform().GetLocation();
+				const auto direction = owner->GetActorTransform().GetUnitAxis(EAxis::X);
+
+				// Sensing
+				const auto senseView = FMath::DegreesToRadians(SensingComponent->PeripheralVisionAngle);				
+				DrawDebugCone
+                (
+                    GetWorld(),
+                    location,
+                    direction,
+                    VisualizeFOVRange,
+                    senseView,
+                    senseView,
+                    8,
+                    FColorList::OrangeRed,
+                    true,
+                    DeltaTime,
+                    SDPG_Foreground,
+                    8
+                );
+				
+				// Camera
+				const float cameraView = FMath::DegreesToRadians(CameraComponent->FieldOfView / 2.0f);				
+				DrawDebugCone
+                (
+                    GetWorld(),
+                    location,
+                    direction,
+                    VisualizeFOVRange,
+                    cameraView,
+                    cameraView,
+                    8,
+                    FColorList::LimeGreen,
+                    true,
+                    DeltaTime,
+                    SDPG_Foreground,
+                    4
+                );
+			}
 		}
 	}
 }

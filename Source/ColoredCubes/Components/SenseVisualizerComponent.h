@@ -35,6 +35,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Visualizer")
 	float AdditionalViewAngle = 20.0f;
 
+	UPROPERTY(EditAnywhere, Category = "Visualizer")
+	bool bVisualizeFOV = true;
+
+	UPROPERTY(EditAnywhere, Category = "Visualizer", meta = (EditCondition = "bVisualizeFOV"))
+	float VisualizeFOVRange = 1000.0f;
+	
 	UPROPERTY()
 	UActorSensingComponent* SensingComponent;
 
